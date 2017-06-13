@@ -6,7 +6,21 @@ import darpReporter from '../reporter';
 
 import url from 'url';
 
-let instrumenter = new Instrumenter();
+let instrumenter = new Instrumenter({
+    debug: false,
+    walkDebug: false,
+    coverageVariable: '__coverage__',
+    codeGenerationOptions: {
+        sourceMap: true,
+        sourceMapWithCode: true,
+        sourceContent: true
+    },
+    noAutoWrap: false,
+    noCompact: false,
+    embedSource: true,
+    preserveComments: false,
+    esModules: false
+});
 
 /**
  * 对流量进行分流

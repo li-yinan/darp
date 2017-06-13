@@ -539,7 +539,7 @@ Report.mix(HtmlReport, {
             that = this,
             tree,
             copyAssets = function (subdir) {
-                var srcDir = path.resolve(__dirname, '..', 'assets', subdir);
+                var srcDir = path.resolve(__dirname, 'assets', subdir);
                 fs.readdirSync(srcDir).forEach(function (f) {
                     var resolvedSource = path.resolve(srcDir, f),
                         resolvedDestination = path.resolve(dir, f),
