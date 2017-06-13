@@ -13,7 +13,12 @@ let managePagePort = 8010;
 // 启动一个服务器，用于浏览器回传数据
 let app = express();
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(
+    bodyParser.urlencoded({
+        extended: false,
+        limit: '100000kb'
+    })
+);
 
 app.all('/coverage', (req, res) => {
 

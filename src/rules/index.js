@@ -6,6 +6,15 @@ import darpReporter from '../reporter';
 
 import url from 'url';
 
+import path from 'path';
+
+import config from 'config';
+
+import {getHeader} from '../util/index';
+
+let sourcePath = path.join(process.cwd(), config.get('source'));
+// console.log('>>>>>>', sourcePath, '<<<<<<');
+
 let instrumenter = new Instrumenter({
     debug: false,
     walkDebug: false,
@@ -68,9 +77,16 @@ export default {
         return reqFilter(requestDetail, {
             config: [
             {
-                test: /\.js$/,
+                test: function () {
+                    if (/\.js$/.test(parsedUrl.pathname)) {
+                        if (!/dep/.test(parsedUrl.pathname)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                },
                 callback() {
-                    newResponse.body = instrumenter.instrumentSync(newResponse.body + '', '/Users/liyinan/code/test/darp/' + parsedUrl.pathname.substr(1));
+                    newResponse.body = instrumenter.instrumentSync(newResponse.body + '', path.join(sourcePath, parsedUrl.pathname));
 
                     return {
                         response: newResponse
@@ -79,7 +95,8 @@ export default {
             },
             {
                 test: function () {
-                    let resType = newResponse.header['content-type'];
+                    let resType = getHeader(newResponse, 'content-type');
+                    
                     return /html/.test(resType);
                 },
                 callback() {
