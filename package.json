@@ -1,6 +1,6 @@
 {
   "name": "darp",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Development And Refactoring Platform",
   "main": "lib/index.js",
   "scripts": {
