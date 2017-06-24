@@ -12,7 +12,16 @@ import config from 'config';
 
 import {getHeader} from '../util/index';
 
-let sourcePath = path.join(process.cwd(), config.get('source'));
+let sourceDir = '';
+
+try {
+    sourceDir = config.get('source');
+}
+catch (e) {
+    sourceDir = './';
+}
+
+let sourcePath = path.join(process.cwd(), sourceDir);
 // console.log('>>>>>>', sourcePath, '<<<<<<');
 
 let instrumenter = new Instrumenter({
@@ -79,8 +88,10 @@ export default {
             {
                 test: function () {
                     if (/\.js$/.test(parsedUrl.pathname)) {
-                        if (!/dep/.test(parsedUrl.pathname)) {
-                            return true;
+                        if (!/dep|\.min\./.test(parsedUrl.pathname)) {
+                            if (parsedUrl.port !== '8010') {
+                                return true;
+                            }
                         }
                     }
                     return false;
@@ -96,8 +107,13 @@ export default {
             {
                 test: function () {
                     let resType = getHeader(newResponse, 'content-type');
+                    if (/html/.test(resType)) {
+                        if (parsedUrl.port !== '8010') {
+                            return true;
+                        }
+                    }
                     
-                    return /html/.test(resType);
+                    return false;
                 },
                 callback() {
                     // 给html响应添加自定义的js

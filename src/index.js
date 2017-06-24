@@ -4,10 +4,9 @@ import rule from './rules/index';
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import {report} from './report';
+import {exec} from 'grant-setproxy';
 
-import open from 'open';
-
+import coverage from './router/coverage';
 let managePagePort = 8010;
 
 // 启动一个服务器，用于浏览器回传数据
@@ -20,18 +19,8 @@ app.use(
     })
 );
 
-app.all('/coverage', (req, res) => {
+app.all('/coverage', coverage);
 
-    let coverage = JSON.parse(req.body.coverage);
-    // console.log(JSON.stringify(coverage, null, 4));
-
-    report(coverage, function () {
-        open('http://localhost:' + managePagePort + '/report');
-        res.json({
-            status: 0
-        });
-    });
-});
 app.use(express.static(__dirname + '/static'));
 
 app.listen(managePagePort);
@@ -49,22 +38,34 @@ const options = {
     forceProxyHttps: false,
     silent: false
 };
+
 const proxyServer = new AnyProxy.ProxyServer(options);
 
-proxyServer.on('ready', () => { /* */ });
+proxyServer.on('ready', () => { 
+    // server ready之后修改系统代理
+    exec('-setwebproxy', 'Wi-Fi', '127.0.0.1', '8001');
+    exec('-setwebproxystate', 'Wi-Fi', 'on');
+});
 proxyServer.on('error', (e) => {
     console.log(e);
 });
 proxyServer.start();
 
-//exit cause ctrl+c
-process.on('SIGINT', () => {
+async function close() {
     try {
         proxyServer && proxyServer.close();
     } catch (e) {
         console.error(e);
     }
+    // 这里暂时不好使，用系统命令就好使，换成c语言的代码调用就不行，有空再搞
+    // 可笑的是启动代理可以，关闭代理不行，我信了你的邪
+    await exec('-setwebproxystate', 'Wi-Fi', 'off');
     process.exit();
+}
+
+//exit cause ctrl+c
+process.on('SIGINT', () => {
+    close();
 });
 
 process.on('uncaughtException', (err) => {
@@ -76,10 +77,7 @@ process.on('uncaughtException', (err) => {
             errorTipText += err;
         }
     } catch (e) {}
-    try {
-        proxyServer && proxyServer.close();        
-    } catch (e) {}
-    process.exit();
+    close();
 });
 
 //when finished

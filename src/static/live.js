@@ -49,7 +49,7 @@ function createElement() {
             var input = document.getElementById('coverage');
             input.value = JSON.stringify(data);
             var form = document.getElementById('coverageform');
-            coverageform.submit();
+            form.submit();
         }
     };
     return div;
