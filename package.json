@@ -32,6 +32,7 @@
     "babel-preset-stage-2": "^6.24.1"
   },
   "dependencies": {
+    "babel-runtime": "^6.23.0",
     "anyproxy": "^4.0.0-beta13",
     "body-parser": "^1.17.2",
     "config": "^1.26.1",
