@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "babel-node src/index.js",
     "build": "script/build.sh",
-    "prepublish": "npm run build",
+    "prepublish": "npm run build && npm version patch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
