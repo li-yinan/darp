@@ -5,11 +5,13 @@
   "main": "lib/index.js",
   "scripts": {
     "dev": "babel-node src/index.js",
-    "build": "",
+    "build": "script/build.sh",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "darp": "bin/darp.js"
+    "darp": "bin/darp.js",
+    "darp-dev": "bin/darp-dev.js"
   },
   "repository": {
     "type": "git",

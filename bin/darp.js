@@ -1,3 +1,3 @@
-#!/usr/bin/env babel-node
+#!/usr/bin/env node
 
-import '../src/index';
+require('../lib/index');
