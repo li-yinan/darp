@@ -1,6 +1,8 @@
 import open from 'open';
 import {report} from '../report';
 
+import {save} from '../dao/coverage';
+
 export default function (req, res) {
     let coverage = JSON.parse(req.body.coverage);
     // console.log(JSON.stringify(coverage, null, 4));

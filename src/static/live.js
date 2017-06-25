@@ -6,6 +6,7 @@ function createElement() {
                 padding: 10px;
                 background-color: #ddd;
                 position: fixed;
+                z-index: 999999;
                 right: 10px;
                 top: 10px;
             }

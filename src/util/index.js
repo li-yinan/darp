@@ -6,6 +6,9 @@
  * @date 2017-06-13
  */
 
+import path from 'path';
+import fs from 'fs';
+
 /**
  * 因为http header不区分大小写，所以有content-type, Content-type, content-Type等，这里统一处理，省事
  *
@@ -25,4 +28,25 @@ export function getHeader(req, name) {
             }
         }
     }
+}
+
+function hasPackageJson(dir) {
+    return fs.existsSync(path.join(dir, 'package.json'));
+}
+
+/**
+ * 获取运行目录的根路径
+ *
+ * @return {String}
+ */
+export function getRuntimeRoot() {
+    let runtimePath = process.cwd();
+    while(!hasPackageJson(runtimePath)) {
+        let parsedPath = path.parse(runtimePath);
+        runtimePath  = parsedPath.dir;
+        if (runtimePath === '/') {
+            return process.cwd();
+        }
+    }
+    return runtimePath;
 }
