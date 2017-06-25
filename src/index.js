@@ -44,7 +44,7 @@ const proxyServer = new AnyProxy.ProxyServer(options);
 proxyServer.on('ready', () => { 
     // server ready之后修改系统代理
     exec('-setwebproxy', 'Wi-Fi', '127.0.0.1', '8001');
-    exec('-setwebproxystate', 'Wi-Fi', 'on');
+    // exec('-setwebproxystate', 'Wi-Fi', 'on');
 });
 proxyServer.on('error', (e) => {
     console.log(e);
