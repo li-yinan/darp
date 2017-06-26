@@ -1,16 +1,29 @@
-import open from 'open';
-import {report} from '../report';
+import {save, findMergedCoverage} from '../dao/coverage';
+import {reportUnCoverage} from '../report';
+import url from 'url';
 
-import {save} from '../dao/coverage';
-
-export default function (req, res) {
+/**
+ * 存储覆盖率数据
+ *
+ * @param {Request} req 请求
+ * @param {Response} res 响应
+ *
+ */
+export default async function (req, res) {
     let coverage = JSON.parse(req.body.coverage);
-    // console.log(JSON.stringify(coverage, null, 4));
-
-    report(coverage, function () {
-        open('http://127.0.0.1:8010/report');
-        res.json({
-            status: 0
-        });
+    let parsedUrl = url.parse(req.url);
+    let data = {
+        data: coverage,
+        title: '',
+        domain: parsedUrl.host,
+        path: parsedUrl.path
+    };
+    // 保存数据
+    await save(data);
+    let mergedCoverage = await findMergedCoverage();
+    reportUnCoverage(coverage, function () {
+        res.send(`
+            <html></html>
+        `);
     });
 }

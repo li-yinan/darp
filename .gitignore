@@ -3,3 +3,4 @@ npm-debug.log
 *.swp
 src/static/report
 lib
+.darp

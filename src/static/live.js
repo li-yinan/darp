@@ -11,9 +11,13 @@ function createElement() {
                 top: 10px;
             }
             .darp-coverage,
+            .darp-report,
             .darp-reset {
                 background-color: #379fff;
+                text-decoration: none;
                 border: solid 1px #379fff;
+                display: block;
+                text-align: center;
                 border-radius: 4px;
                 margin: 10px;
                 padding: 4px;
@@ -22,7 +26,8 @@ function createElement() {
         </style>
         <div class="darp-container">
             <div class="darp-coverage">提交覆盖率数据</div>
-            <div class="darp-reset">重置覆盖率计数</div>
+            <div class="darp-reset" style="display: none;">重置覆盖率计数</div>
+            <a href="//127.0.0.1:8010/mergereport" class="darp-report" target="_blank">展现覆盖率分析</a>
         </div>
         <div style="display: none;">
             <iframe name="formtarget" style="display:none;"></iframe>

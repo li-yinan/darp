@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import {exec} from 'grant-setproxy';
 
 import coverage from './router/coverage';
+import mergereport from './router/mergereport';
 let managePagePort = 8010;
 
 // 启动一个服务器，用于浏览器回传数据
@@ -20,6 +21,8 @@ app.use(
 );
 
 app.all('/coverage', coverage);
+
+app.all('/mergereport', mergereport);
 
 app.use(express.static(__dirname + '/static'));
 

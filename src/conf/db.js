@@ -8,7 +8,7 @@ let runtimeRoot = getRuntimeRoot();
 let dbDir = path.join(runtimeRoot, '.darp');
 mkdirp(dbDir);
 
-export const db = new Sequelize('database', 'username', 'password', {
+export let db = new Sequelize('database', 'username', 'password', {
     host: 'localhost',
     dialect: 'sqlite',
 
@@ -17,6 +17,17 @@ export const db = new Sequelize('database', 'username', 'password', {
         min: 0,
         idle: 10000
     },
-
+    logging: function () {
+    },
     storage: path.join(dbDir, 'database.sqlite')
 });
+
+export let Coverage = db.define('coverage', {
+    title: Sequelize.STRING,
+    data: Sequelize.STRING,
+    domain: Sequelize.STRING,
+    path: Sequelize.STRING,
+    isMerged: Sequelize.BOOLEAN
+});
+
+Coverage.sync();
