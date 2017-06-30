@@ -14,4 +14,7 @@
 ####到此已经实现了一个非常完整的darp功能，0.x.y版本结束
 
 ###1.0.0
+####增加mock数据功能，0.x版本在refactoring方向提供了完善的功能，1.x版本侧重于在develop方面提供功能，扣题darp(develop and refactoring platform)
+
+###2.0.0
 ####增加sourcemap，可以对es6代码进行case覆盖率梳理

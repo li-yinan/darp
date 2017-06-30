@@ -44,6 +44,7 @@
     "mkdirp": "^0.5.1",
     "node-config": "0.0.2",
     "sequelize": "^4.2.0",
+    "shelljs": "^0.7.8",
     "sqlite3": "^3.1.8"
   }
 }

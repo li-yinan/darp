@@ -1,0 +1,46 @@
+module.exports = {
+    // 请求是否需要进行打桩统计
+    instrument: {
+        // 请求会先匹配include，全为true就继续匹配exclude 
+        // 数组为空代表所有请求都打桩
+        include: [
+        ],
+        // 匹配完include会再匹配exclude，用来在include的规则中排除一部分，全为false就会打桩
+        // 数组为空代表只要include符合的就打桩
+        exclude: [
+        ]
+    },
+    // mock尚未实现，等1.0.0再说
+    mock: [
+        {
+            // 符合这个条件的请求
+            test: /abc/,
+            // 做如下处理
+            resolve: function (req, res) {
+                res.json({
+                    data: {
+                        hello: 'world'
+                    },
+                    status: 0,
+                    statusInfo: ''
+                });
+            }
+        },
+        {
+            // 符合这个条件的请求
+            test: function (req) {
+                return /abc/.test(req.url);
+            },
+            // 做如下处理
+            resolve: function (req, res) {
+                res.json({
+                    data: {
+                        hello: 'world'
+                    },
+                    status: 0,
+                    statusInfo: ''
+                });
+            }
+        }
+    ]
+};

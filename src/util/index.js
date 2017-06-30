@@ -104,3 +104,62 @@ export function maxMerge(from, to) {
     }
     // 基本数据结构，这里不可能出现
 }
+
+/**
+ * 判断一个字符串是否符合一串规则
+ *
+ * @param {String} str string
+ * @param {Array.<RegExp|Function>} rules
+ *
+ * @return {Boolean}
+ */
+export function match(str = '', include = [], exclude = []) {
+    let res = false;
+    if (!include.length) {
+        // include为空，代表一切都通过
+        res = true;
+    }
+    else {
+        // 任意一个是true就是匹配成功
+        res = include.reduce((res, item) => {
+            if (({}).toString.call(item) === '[object RegExp]') {
+                // 正则
+                return res || item.test(str);
+            }
+            else if (({}).toString.call(item) === '[object Function]') {
+                // function
+                return res || item(str);
+            }
+            else {
+                return false;
+            }
+        }, false);
+    }
+    if (res) {
+        // 如果include匹配成功，就继续匹配exclude
+        if (!exclude.length) {
+            // 没有exclude直接返回true
+            return true;
+        }
+        else {
+            // 有exclude的，只要有一个匹配就是false
+            return !exclude.reduce((res, item) => {
+                if (({}).toString.call(item) === '[object RegExp]') {
+                    // 正则
+                    return res || item.test(str);
+                }
+                else if (({}).toString.call(item) === '[object Function]') {
+                    // function
+                    return res || item(str);
+                }
+                else {
+                    return false;
+                }
+            }, false);
+        }
+    }
+    else {
+        // include匹配失败，直接返回false
+        return false;
+    }
+}

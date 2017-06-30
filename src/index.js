@@ -60,8 +60,6 @@ async function close() {
     } catch (e) {
         console.error(e);
     }
-    // 这里暂时不好使，用系统命令就好使，换成c语言的代码调用就不行，有空再搞
-    // 可笑的是启动代理可以，关闭代理不行，我信了你的邪
     await exec('-setwebproxystate', 'Wi-Fi', 'off');
     process.exit();
 }

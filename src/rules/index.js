@@ -8,21 +8,13 @@ import url from 'url';
 
 import path from 'path';
 
-import config from 'config';
+import {needInstrument} from '../conf/config';
 
-import {getHeader} from '../util/index';
+import {getHeader, match} from '../util/index';
 
-let sourceDir = '';
-
-try {
-    sourceDir = config.get('source');
-}
-catch (e) {
-    sourceDir = './';
-}
+let sourceDir = './';
 
 let sourcePath = path.join(process.cwd(), sourceDir);
-// console.log('>>>>>>', sourcePath, '<<<<<<');
 
 let instrumenter = new Instrumenter({
     debug: false,
@@ -87,14 +79,12 @@ export default {
             config: [
             {
                 test: function () {
-                    if (/\.js$/.test(parsedUrl.pathname)) {
-                        if (!/dep|\.min\./.test(parsedUrl.pathname)) {
-                            if (parsedUrl.port !== '8010') {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
+                    let url = requestDetail.url
+                    return match(
+                        url,
+                        [/\.js/],
+                        [/dep/, /\.min\./, /\:8010\//]
+                    ) && needInstrument(url);
                 },
                 callback() {
                     newResponse.body = instrumenter.instrumentSync(newResponse.body + '', path.join(sourcePath, parsedUrl.pathname));
@@ -106,6 +96,9 @@ export default {
             },
             {
                 test: function () {
+                    if (!needInstrument(requestDetail.url)) {
+                        return false;
+                    }
                     let resType = getHeader(newResponse, 'content-type');
                     if (/html/.test(resType)) {
                         if (parsedUrl.port !== '8010') {
@@ -117,7 +110,8 @@ export default {
                 },
                 callback() {
                     // 给html响应添加自定义的js
-                    newResponse.body += '<script src="http://127.0.0.1:8010/live.js"></script>';
+                    // newResponse.body += '<script src="http://127.0.0.1:8010/live.js"></script>';
+                    newResponse.body = (newResponse.body + '').replace('</body>', '<script src="http://127.0.0.1:8010/live.js"></script>\n</body>');
                     return {
                         response: newResponse
                     };
