@@ -21,7 +21,7 @@ export default async function (req, res) {
     // 保存数据
     await save(data);
     let mergedCoverage = await findMergedCoverage();
-    reportUnCoverage(coverage, function () {
+    reportUnCoverage(mergedCoverage, function () {
         res.send(`
             <html></html>
         `);

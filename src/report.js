@@ -28,6 +28,12 @@ export function reportCoverage(__coverage__, callback) {
     });
 }
 
+/**
+ * 生成没有被覆盖的代码报告
+ *
+ * @param {Object} __coverage__ 覆盖率数据
+ * @param {Function} callback 回调函数
+ */
 export function reportUnCoverage(__coverage__, callback) {
     let collector = new Collector();
     let reporter = new Reporter(null, __dirname + '/static/report');

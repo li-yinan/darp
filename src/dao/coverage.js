@@ -1,10 +1,12 @@
 import {Coverage} from '../conf/db';
+import {maxMerge} from '../util/index';
 
 export async function save({data, path, title, domain}) {
     let mergedCoverage = await findMergedCoverage();
     if (mergedCoverage) {
         // 如果以前有merge过的，就继续merge
-        Object.assign(mergedCoverage, data);
+        // Object.assign(mergedCoverage, data);
+        maxMerge(data, mergedCoverage);
         await updateMergedCoverage(mergedCoverage);
     }
     else {
