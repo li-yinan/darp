@@ -19,10 +19,15 @@ let samplePath = path.join(__dirname, 'config.js.sample');
 let config = null;
 
 if (!fs.existsSync(configPath)) {
-    // 拷贝示例到用户配置文件夹
-    shell.cp(samplePath, configPath);
+    mkdirp(configDir, function () {
+        // 拷贝示例到用户配置文件夹
+        shell.cp(samplePath, configPath);
+        config = require(configPath);
+    });
 }
-config = require(configPath);
+else {
+    config = require(configPath);
+}
 
 export function getConfig() {
     return config;
