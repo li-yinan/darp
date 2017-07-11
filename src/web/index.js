@@ -1,15 +1,40 @@
-import React from 'react';
-import ReactDom from 'react-dom';
+import React, {Component} from 'react';
+import {render} from 'react-dom';
+import thunk from 'redux-thunk';
+import {Provider, connect} from 'react-redux';
+import {createStore, applyMiddleware, compose} from 'redux';
+import rootReducer from './reducers/index';
 
 import './main.less';
+import {Coverage} from './components/coverage';
+import {FloatWindow} from './components/floatwindow';
 
-class App extends React.Component {
+const createStoreWithMiddleware = compose(
+    applyMiddleware(
+        thunk
+    ),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+)(createStore);
+
+const store = createStoreWithMiddleware(rootReducer, {});
+
+class App extends Component {
     render() {
-        return <div>hello</div>;
+        return <div>
+            <FloatWindow>
+                <Coverage/>
+            </FloatWindow>
+        </div>;
     }
 }
 
 let root = document.createElement('div');
 root.className = 'darp';
-ReactDom.render(<App/>, root);
+render(
+    <Provider store={store}>
+        <App/>
+    </Provider>,
+    root
+);
 document.body.appendChild(root);
+
