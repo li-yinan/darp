@@ -58,7 +58,33 @@ function createElement() {
             form.submit();
         }
     };
+    div.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
     return div;
 }
 
 document.body.appendChild(createElement());
+
+function getUniqueClassName(el) {
+    return el.className;
+}
+
+function track(e) {
+    var el = e.target;
+    var text = el.innerText;
+    var data = {
+        type: e.type
+    };
+    if (text && text.length > 0 && text.length < 20) {
+        data.content = text;
+    }
+    else {
+        data.content = getUniqueClassName(el);
+    }
+    console.log(data.type, data.content);
+}
+
+document.body.addEventListener('click', track, false);
