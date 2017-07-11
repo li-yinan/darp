@@ -32,6 +32,12 @@ let instrumenter = new Instrumenter({
     esModules: false
 });
 
+let port = 8010;
+
+if (process.env.NODE_ENV === 'development') {
+    // 开发模式下js访问到webpack上，8080是webpack-dev-server，js路径是相同的
+    port = 8080;
+}
 /**
  * 对流量进行分流
  *
@@ -83,7 +89,7 @@ export default {
                     return match(
                         url,
                         [/\.js/],
-                        [/dep/, /\.min\./, /\:8010\//]
+                        [/dep/, /\.min\./, new RegExp(`:${port}/`)]
                     ) && needInstrument(url);
                 },
                 callback() {
@@ -101,7 +107,7 @@ export default {
                     }
                     let resType = getHeader(newResponse, 'content-type');
                     if (/html/.test(resType)) {
-                        if (parsedUrl.port !== '8010') {
+                        if (parsedUrl.port !== port) {
                             return true;
                         }
                     }
@@ -111,7 +117,7 @@ export default {
                 callback() {
                     // 给html响应添加自定义的js
                     // newResponse.body += '<script src="http://127.0.0.1:8010/live.js"></script>';
-                    newResponse.body = (newResponse.body + '').replace('</body>', '<script src="http://127.0.0.1:8010/live.js"></script>\n</body>');
+                    newResponse.body = (newResponse.body + '').replace('</body>', '<script src="http://127.0.0.1:' + port + '/live.js"></script>\n</body>');
                     return {
                         response: newResponse
                     };
