@@ -7,7 +7,8 @@ import rootReducer from './reducers/index';
 
 import './main.less';
 import {Coverage} from './components/coverage';
-import {FloatWindow} from './components/floatwindow';
+import FloatWindow from './components/floatwindow';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 const createStoreWithMiddleware = compose(
     applyMiddleware(
@@ -32,7 +33,9 @@ let root = document.createElement('div');
 root.className = 'darp';
 render(
     <Provider store={store}>
-        <App/>
+        <MuiThemeProvider>
+            <App/>
+        </MuiThemeProvider>
     </Provider>,
     root
 );
