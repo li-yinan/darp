@@ -83,7 +83,7 @@ class FloatWindow extends Component {
         }
         let param = '';
         let _this = this;
-        if (this.isNear(e.pageX, e.pageY)) {
+        if (this.isNear(e.clientX, e.clientY)) {
             param = MOUSE_NEAR_TRUE;
         }
         else {
