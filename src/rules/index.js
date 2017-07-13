@@ -55,6 +55,9 @@ function reqFilter(req, {config = []}) {
         // 这个是本系统自己的js，不做处理
         return;
     }
+    if (parsedUrl.port === '8010') {
+        return;
+    }
 
     config.forEach(item => {
         let type = ({}).toString.call(item.test);
@@ -89,7 +92,7 @@ export default {
                     return match(
                         url,
                         [/\.js/],
-                        [/dep/, /\.min\./, new RegExp(`:${port}/`)]
+                        [/dep/, /\.min\./]
                     ) && needInstrument(url);
                 },
                 callback() {
@@ -102,7 +105,8 @@ export default {
             },
             {
                 test: function () {
-                    if (!needInstrument(requestDetail.url)) {
+                    let url = requestDetail.url;
+                    if (!needInstrument(url)) {
                         return false;
                     }
                     let resType = getHeader(newResponse, 'content-type');
