@@ -8,6 +8,8 @@ import url from 'url';
 
 import path from 'path';
 
+import iconv from 'iconv-lite';
+
 import {needInstrument} from '../conf/config';
 
 import {getHeader, match} from '../util/index';
@@ -87,6 +89,7 @@ export default {
         return reqFilter(requestDetail, {
             config: [
             {
+                // js打桩
                 test: function () {
                     let url = requestDetail.url
                     return match(
@@ -104,6 +107,7 @@ export default {
                 }
             },
             {
+                // html注入js
                 test: function () {
                     let url = requestDetail.url;
                     if (!needInstrument(url)) {
@@ -121,10 +125,24 @@ export default {
                 callback() {
                     // 给html响应添加自定义的js
                     // newResponse.body += '<script src="http://127.0.0.1:8010/live.js"></script>';
-                    newResponse.body = (newResponse.body + '').replace('</body>', '<script src="http://127.0.0.1:' + port + '/live.js"></script>\n</body>');
-                    return {
-                        response: newResponse
-                    };
+                    function replaceBody(code) {
+                        return code.replace('</body>', '<script src="http://127.0.0.1:' + port + '/live.js"></script>\n</body>');
+                    }
+                    let encoding = getHeader(newResponse, 'content-type');
+                    let body = '';
+                    if (/charset=gb/.test(encoding)) {
+                        // gbk 或者gb2312
+                        body = iconv.decode(newResponse.body, 'gb2312');
+                        body = replaceBody(body);
+                        body = iconv.encode(body, 'gb2312');
+                    }
+                    else {
+                        // utf-8
+                        body = newResponse.body.toString('utf8');
+                        body = replaceBody(body);
+                    }
+                    newResponse.body = Buffer.from(body);
+                    return;
                 }
             }
             ]
